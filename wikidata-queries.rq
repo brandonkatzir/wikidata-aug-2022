@@ -1,0 +1,59 @@
+#FastStart workshop on Wikidata
+#first example query 
+
+#List of space probes with pictures
+#defaultView:ImageGrid
+SELECT ?spaceProbeLabel ?date ?picture
+WHERE
+{
+  ?spaceProbe wdt:P31 wd:Q26529;
+        wdt:P18 ?picture;
+        wdt:P619 ?date . #mandatory
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "fr,en" .
+  }
+}
+ORDER BY ?date
+LIMIT 88
+
+#######################################################
+#######################################################
+#######################################################
+#######################################################
+
+
+#Popular eye colors among humans
+#title:Popular eye colors among humans
+#illustrates bubblechart view, count
+
+#defaultView:BubbleChart
+SELECT ?eyeColorLabel (COUNT(?human) AS ?count)
+WHERE
+{
+  ?human wdt:P31 wd:Q5.
+  ?human wdt:P1340 ?eyeColor.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+GROUP BY ?eyeColorLabel
+#Show different possibilites for visualization here 
+
+#######################################################
+#######################################################
+#######################################################
+#######################################################
+
+#Oldest software
+SELECT ?software ?softwareLabel ?date (ROUND((NOW() - ?date)/365.2425) AS ?age)
+{
+  ?software wdt:P31/wdt:P139* wd:Q7397.
+  OPTIONAL { ?software wdt:P571 ?date. }
+  OPTIONAL { ?software p:P348/pq:P577 ?date. }
+  FILTER(BOUND(?date)).
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?date
+LIMIT 10 #adjust limit while demonstrating
+
+#Look at timeline feature and play with limiter 
+
+#SPARQL Cheat sheet
